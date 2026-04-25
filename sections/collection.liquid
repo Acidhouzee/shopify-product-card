@@ -7,7 +7,7 @@
 
 <h1>{{ collection.title }}</h1>
 
-<div class="collection-products flex flex-row flex-wrap gap-[30px] mt-[30px] w-[1300px] mx-auto max-[1279px]:w-[100%]">
+<div class="collection-products flex flex-row flex-wrap gap-[30px] mt-[30px] w-[1350px] mx-auto max-[1279px]:w-[100%]">
   {% paginate collection.products by 20 %}
     {% for product in collection.products %}
       <div class="collection-product 
