@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Roboto", sans-serif;
+  --color-sale-color: #FF0000;
+  --color-item-bd-color: #E8E8E8;
+  --color-sale-bd-color: #FF0000;
+  --color-descr-color: #111111;
+  --color-link: #0A4874;
+  --color-link-hover: #FF0000;
+}

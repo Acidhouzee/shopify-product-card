@@ -1,0 +1,113 @@
+{% comment %}
+  This section is used in the collection template to render collection page
+  listing all products within a collection.
+
+  https://shopify.dev/docs/storefronts/themes/architecture/templates/collection
+{% endcomment %}
+
+<h1>{{ collection.title }}</h1>
+
+<div class="collection-products flex flex-row flex-wrap gap-[30px] mt-[30px] w-[1300px] mx-auto max-[1279px]:w-[100%]">
+  {% paginate collection.products by 20 %}
+    {% for product in collection.products %}
+      <div class="collection-product 
+        basis-[calc((100%-90px)/4)]
+        max-[1279px]:basis-[calc((100%-60px)/3)]
+        max-[767px]:basis-[calc((100%-30px)/2)]
+        max-[479px]:basis-[calc((100%)/1)]
+        ">
+          <div class="product-gallery group relative py-[18px] px-[6px] overflow-hidden rounded-[10px] border-[1px] border-item-bd-color max-[1279px]:justify-center">
+            {% if product.compare_at_price > product.price %}
+              <div class="product-badge product-badge--sale pt-[8px] px-[16px] pb-[5px] font-display text-[15px] leading-[1] font-medium capitalize text-sale-color absolute top-[18px] left-[20px] rounded-[25px] border-[1px] border-sale-bd-color z-2">
+                On sale!
+              </div>
+            {% endif %}
+            {% assign variant = product.selected_or_first_available_variant %}
+            <img
+              src="{{ product.featured_image | image_url: width: 630 }}"
+              class="product-image max-w-[315px] max-h-[340px] opacity-100 transition-opacity duration-300 group-hover:opacity-0"
+              width="315"
+              height="340"
+              alt="{{ product.title }}"
+              loading="lazy"
+            >
+            <img
+              src="{{ variant.metafields.custom.hover_image | image_url: width: 630 }}"
+              class="product-image-hover max-w-[315px] max-h-[340px] object-cover absolute top-0 left-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+              width="315"
+              height="340"
+              alt="{{ product.title }}"
+              loading="lazy"
+            >
+          </div>
+          {% for option in product.options_with_values %}
+            {% if option.name == 'Color' %}
+              <div class="color-swatches flex gap-[8px] gap-y-[8px] mt-[15px]">
+                {% for value in option.values %}
+                  {% assign variant = product.variants | where: "option1", value | first %}
+                  <label class="swatch cursor-pointer">
+                    <input 
+                      class="hidden peer"
+                      type="radio"
+                      name="color-{{ product.id }}"
+                      value="{{ value }}"
+                      data-image="{{ variant.featured_image | image_url: width: 800 }}"
+                      data-image-hover="{{ variant.metafields.custom.hover_image | image_url: width: 800 }}"
+                      data-price="{{ variant.price | money }}"
+                      data-compare="{{ variant.compare_at_price | money }}"
+                    >
+                    <span class="
+                      swatch-circle relative inline-block w-[20px] h-[20px] rounded-[50%] border border-transparent
+                      before:content-[''] before:absolute before:inset-[-3px] before:rounded-[50%] before:border-[1px] before:border-transparent
+                      peer-checked:before:border-[#0A4874]
+                      "
+                      style="background-color: {{ value.swatch.color | downcase }}"></span>
+                  </label>
+                {% endfor %}
+              </div>
+            {% endif %}
+          {% endfor %}
+          <div class="collection-product__content mt-[9px]">
+            <p class="product-description font-display text-[14px] leading-[16px] font-regular tracking-[0] text-descr-color">
+              {{ product.description }}
+            </p>
+            <p class="product-title mt-[5px] inline-block font-display text-[16px] leading-[18px] font-medium text-link transition-color duration-300 
+              hover:text-link-hover">
+              {{ product.title | escape | link_to: product.url }}
+            </p>
+            <div class="product-price mt-[4px] font-display text-[14px] leading-[16px] tracking-[0] text-descr-color">
+              {% if product.compare_at_price %}
+                <span class="price-compare mr-[6px] line-through">
+                  {{ product.compare_at_price | money }}
+                </span>
+                <span class="price-current text-sale-color">
+                  {{ product.price | money }}
+                </span>
+              {% else %}
+                <span class="price-compare text-descr-color">
+                  {{ product.price | money }}
+                </span>
+              {% endif %}
+            </div>
+        </div>
+      </div>
+    {% endfor %}
+
+    {{ paginate | default_pagination }}
+  {% endpaginate %}
+
+</div>
+
+{% comment %} {% stylesheet %}
+  .collection-products {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+  }
+{% endstylesheet %} {% endcomment %}
+
+{% schema %}
+{
+  "name": "t:general.collection",
+  "settings": []
+}
+{% endschema %}
