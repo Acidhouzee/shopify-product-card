@@ -7,7 +7,7 @@
 
 <h1>{{ collection.title }}</h1>
 
-<div {{ section.shopify_attributes }} class="collection-products flex flex-row flex-wrap gap-[30px] mt-[30px] w-[1350px] bg-red-500 mx-auto max-[1279px]:w-[100%]">
+<div {{ section.shopify_attributes }} class="collection-products flex flex-row flex-wrap gap-[30px] mt-[30px] w-[1350px] mx-auto max-[1279px]:w-[100%]">
 
   {% assign limit = section.settings.products_per_page | default: 20 %}
 
