@@ -1,0 +1,100 @@
+<div class="collection-product 
+  basis-[calc((100%-90px)/4)]
+  max-[1279px]:basis-[calc((100%-60px)/3)]
+  max-[767px]:basis-[calc((100%-30px)/2)]
+  max-[479px]:basis-[calc((100%)/1)]
+  ">
+    <div class="product-gallery group relative py-[18px] px-[6px] overflow-hidden rounded-[10px] border border-item-bd-color max-[1279px]:justify-center">
+      {% if product.compare_at_price > product.price %}
+        <div class="product-badge product-badge--sale pt-[8px] px-[16px] pb-[5px] font-display text-[15px] leading-[1] font-medium capitalize text-sale-color absolute top-[18px] left-[20px] rounded-[25px] border border-sale-bd-color z-2">
+          {{ 'products.product.on_sale' | t }}
+        </div>
+      {% endif %}
+      {% assign variant = product.selected_or_first_available_variant %}
+      <img
+        src="{{ product.featured_image | image_url: width: 630 }}"
+        class="product-image max-w-[315px] max-h-[340px] opacity-100 transition-opacity duration-300 group-hover:opacity-0"
+        width="315"
+        height="340"
+        alt="{{ product.title }}"
+        loading="lazy"
+      >
+      {% if variant.metafields.custom.hover_image.value != blank %}
+        <img
+          src="{{ variant.metafields.custom.hover_image | image_url: width: 630 }}"
+          class="product-image-hover max-w-[315px] max-h-[340px] object-contain absolute top-0 left-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+          width="315"
+          height="340"
+          alt="{{ product.title }}"
+          loading="lazy"
+        >
+      {% endif %}
+    </div>
+    {% for option in product.options_with_values %}
+      {% if option.name == 'Color' %}
+        {% assign color_option_index = option.position %}
+        <div class="color-swatches flex gap-[8px] gap-y-[8px] mt-[15px]">
+          {% for value in option.values %}
+
+            {% if color_option_index == 1 %}
+              {% assign variant = product.variants | where: "option1", value | first %}
+            {% elsif color_option_index == 2 %}
+              {% assign variant = product.variants | where: "option2", value | first %}
+            {% else %}
+              {% assign variant = product.variants | where: "option3", value | first %}
+            {% endif %}
+
+            <label class="swatch cursor-pointer">
+              <input 
+                class="hidden peer"
+                type="radio"
+                name="color-{{ product.id }}"
+                value="{{ value }}"
+                aria-label="Color {{ value }}"
+                {% if forloop.first %}checked{% endif %}
+                data-image="{{ variant.featured_image | image_url: width: 800 }}"
+                data-image-hover="{{ variant.metafields.custom.hover_image | image_url: width: 800 }}"
+                data-price="{{ variant.price | money }}"
+                data-compare="{{ variant.compare_at_price | money }}"
+              >
+              <span class="
+                swatch-circle relative inline-block w-[20px] h-[20px] rounded-[50%] border border-transparent
+                before:content-[''] before:absolute before:inset-[-3px] before:rounded-[50%] before:border before:border-transparent
+                peer-checked:before:border-[#0A4874]
+                "
+                style="background-color: {{ value.swatch.color | downcase }}"></span>
+            </label>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endfor %}
+    <div class="collection-product__content mt-[9px]">
+      <p class="product-description font-display text-[14px] leading-[16px] font-regular tracking-[0] text-descr-color">
+        {{ product.description | strip_html }}
+      </p>
+      <p class="product-title mt-[5px] inline-block font-display text-[16px] leading-[18px] font-medium text-link transition-color duration-300 
+        hover:text-link-hover">
+        {{ product.title | escape | link_to: product.url }}
+      </p>
+      <div class="product-price mt-[4px] font-display text-[14px] leading-[16px] tracking-[0] text-descr-color">
+        {% if product.compare_at_price %}
+          <span class="price-compare mr-[6px] line-through">
+            <span class="sr-only">
+              {{ 'products.product.price' | t }}:
+            </span>
+            {{ product.compare_at_price | money }}
+          </span>
+          <span class="price-current text-sale-color">
+            {{ product.price | money }}
+          </span>
+        {% else %}
+          <span class="price-compare text-descr-color">
+            <span class="sr-only">
+              {{ 'products.product.sale_price' | t }}:
+            </span>
+            {{ product.price | money }}
+          </span>
+        {% endif %}
+      </div>
+  </div>
+</div>
