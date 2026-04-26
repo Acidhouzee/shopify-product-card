@@ -4,7 +4,6 @@ document.querySelectorAll('.color-swatches input').forEach(input => {
     if (!card) return;
 
     // image hover
-    const card = this.closest('.collection-product');
     const mainImage = card.querySelector('.product-image');
     const hoverImage = card.querySelector('.product-image-hover');
     const newMain = this.dataset.image;
@@ -15,18 +14,22 @@ document.querySelectorAll('.color-swatches input').forEach(input => {
 
     // price block
     const priceBlock = card.querySelector('.product-price');
+    if (!priceBlock) return;
+
     const compareEl = priceBlock.querySelector('.price-compare');
     const currentEl = priceBlock.querySelector('.price-current');
 
-    if (this.dataset.price) {
+    if (this.dataset.price && currentEl) {
       currentEl.textContent = this.dataset.price;
     }
 
-    if (this.dataset.compare && this.dataset.compare !== this.dataset.price) {
-      compareEl.style.display = 'inline';
-      compareEl.textContent = this.dataset.compare;
-    } else {
-      compareEl.style.display = 'none';
+    if (compareEl) {
+      if (this.dataset.compare && this.dataset.compare !== this.dataset.price) {
+        compareEl.style.display = 'inline';
+        compareEl.textContent = this.dataset.compare;
+      } else {
+        compareEl.style.display = 'none';
+      }
     }
   });
 });
